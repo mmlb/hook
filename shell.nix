@@ -28,6 +28,7 @@ in mkShell {
     gnumake
     gnused
     go
+    graphviz
     linuxkit-ov
     ncurses
     nixfmt
@@ -38,6 +39,7 @@ in mkShell {
     python3Packages.wheel
     s3cmd
     shfmt
+    tup
     util-linux
   ];
 }

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+base=${1##*/}
+arch=$(awk -F- '{print $NF}' <<<"$base")
+container=$(awk -F- '{print $1"-"$2}' <<<"$base")
+docker buildx build --platform linux/$arch --load -t $org/$container:$tag $container
+
+mkdir -p "${1%%/*}"
+touch "$1.tar"

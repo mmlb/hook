@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+input=$1
+output=$2
+org=$3
+tag=$4
+
+base=${output##*/}
+base=${base%%.yaml}
+mode=$(awk -F- '{print $2}' <<<"$base")
+arch=$(awk -F- '{print $3}' <<<"$base")
+
+args=('-e' '/hook-\(bootkit\|docker\):/ { s|:latest|:'"$tag-$arch"'|; s|quay.io/tinkerbell|'"$org"'|; }')
+if [[ $mode == dbg ]]; then
+	args+=('-e' '/^\s*dbg/ s|#dbg||')
+fi
+sed "${args[@]}" <"$input" >"$output"

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+input=$1
+output=$2
+
+outdir=${output%/*}
+base=${1#*/}
+base=${base%%/*}
+base=${base%%.yaml}
+arch=$(awk -F- '{print $3}' <<<"$base")
+
+linuxkit build -docker -arch "$arch" -format tar-kernel-initrd -name hook -dir "$outdir" "$input"

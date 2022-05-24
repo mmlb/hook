@@ -1,0 +1,21 @@
+org = quay.io/tinkerbell
+tag = latest
+
+!buildx = |> ^ buildx build %O^ org=$(org) tag=$(tag) ./build/buildx %O |>
+!yaml = |> ^ gen %o^ ./build/modify-yaml %f %o $(org) $(tag) %O |>
+!linuxkit = |> ^ linuxkit build %O^ ./build/linuxkit %f %o |>
+
+: hook-bootkit/* |> !buildx |> out/hook-bootkit-amd64.tar
+: hook-bootkit/* |> !buildx |> out/hook-bootkit-arm64.tar
+: hook-docker/*  |> !buildx |> out/hook-docker-amd64.tar
+: hook-docker/*  |> !buildx |> out/hook-docker-arm64.tar
+
+: hook.yaml |> !yaml |> out/hook-rel-amd64.yaml
+: hook.yaml |> !yaml |> out/hook-rel-arm64.yaml
+: hook.yaml |> !yaml |> out/hook-dbg-amd64.yaml
+: hook.yaml |> !yaml |> out/hook-dbg-arm64.yaml
+
+: out/hook-rel-amd64.yaml | out/hook-*-amd64.tar out/hook-*-amd64.tar |> !linuxkit |> out/rel-amd64/hook-initrd.tar
+: out/hook-rel-arm64.yaml | out/hook-*-arm64.tar out/hook-*-arm64.tar |> !linuxkit |> out/rel-arm64/hook-initrd.tar
+: out/hook-dbg-amd64.yaml | out/hook-*-amd64.tar out/hook-*-amd64.tar |> !linuxkit |> out/dbg-amd64/hook-initrd.tar
+: out/hook-dbg-arm64.yaml | out/hook-*-arm64.tar out/hook-*-arm64.tar |> !linuxkit |> out/dbg-arm64/hook-initrd.tar
