@@ -73,6 +73,8 @@ jobs:
           	$generated_release_notes
           	RELEASE_NOTES_EOF
           EOF
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Update Tag
         uses: rickstaa/action-create-tag@v1
