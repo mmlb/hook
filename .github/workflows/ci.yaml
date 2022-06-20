@@ -33,7 +33,7 @@ jobs:
       - name: Fake Build
         run: |
           mkdir -p out/${{steps.commitid.outputs.short}}/rel
-          touch out/${{steps.commitid.outputs.short}}/rel/hook_{aarch64,x86_64}.tar.gz
+          echo "this is a fake build" | tee out/${{steps.commitid.outputs.short}}/rel/hook_{aarch64,x86_64}.tar.gz >/dev/null
 
       - uses: actions/upload-artifact@v3
         with:
@@ -73,6 +73,8 @@ jobs:
           	$generated_release_notes
           	RELEASE_NOTES_EOF
           EOF
+          echo "The generated release notes are:"
+          echo "$generated_release_notes"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
