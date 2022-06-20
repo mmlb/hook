@@ -61,17 +61,17 @@ jobs:
       - name: Generate Release Notes
         run: |
           generated_release_notes=$(gh api 'repos/{owner}/{repo}/releases/generate-notes' -F tag_name=latest --jq .body)
-          cat >>"$GITHUB_ENV" <<-EOF
-          	RELEASE_NOTES<<RELEASE_NOTES_EOF
-            	These are the release notes for the latest development build of Hook.
-            	The build files will be updated on the next merge to main, as such download them before use to avoid surprises.
+          cat >>"$GITHUB_ENV" <<EOF
+          RELEASE_NOTES<<RELEASE_NOTES_EOF
+          These are the release notes for the latest development build of Hook.
+          The build files will be updated on the next merge to main, as such download them before use to avoid surprises.
 
-            	---
-            	Commit: ${{needs.validation.outputs.commitid}}
-            	---
+          ---
+          Commit: ${{needs.validation.outputs.commitid}}
+          ---
 
-          	$generated_release_notes
-          	RELEASE_NOTES_EOF
+          $generated_release_notes
+          RELEASE_NOTES_EOF
           EOF
           echo "The generated release notes are:"
           echo "$generated_release_notes"
