@@ -55,8 +55,8 @@ jobs:
 
       - name: Delete Tag
         run: |
-          git tag -d latest
-          git push origin :latest -f
+          git tag -d latest || echo "no local tag to delete"
+          git push origin :latest -f || echo "no remote tag to delete"
 
       - name: Generate Release Notes
         run: |
