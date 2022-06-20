@@ -63,8 +63,9 @@ jobs:
           generated_release_notes=$(gh api 'repos/{owner}/{repo}/releases/generate-notes' -F tag_name=latest --jq .body)
           cat >>"$GITHUB_ENV" <<EOF
           RELEASE_NOTES<<RELEASE_NOTES_EOF
-          These are the release notes for the latest development build of Hook.
-          The build files will be updated on the next merge to main, as such download them before use to avoid surprises.
+          # :warning: :rotating_light: :boom: Note!!! :boom: :rotating_light: :warning:
+
+          The uploaded files will be updated on the next merge to main, as such download them before use to avoid surprises.
 
           ---
           Commit: ${{needs.validation.outputs.commitid}}
@@ -73,8 +74,6 @@ jobs:
           $generated_release_notes
           RELEASE_NOTES_EOF
           EOF
-          echo "The generated release notes are:"
-          echo "$generated_release_notes"
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
