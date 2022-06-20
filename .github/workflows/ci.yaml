@@ -61,18 +61,18 @@ jobs:
       - name: Generate Release Notes
         run: |
           generated_release_notes=$(gh api 'repos/{owner}/{repo}/releases/generate-notes' -F tag_name=latest --jq .body)
-          cat >>"$GITHUB_ENV" <<EOF
-          RELEASE_NOTES<<RELEASE_NOTES_EOF
-          # :warning: :rotating_light: :boom: Note!!! :boom: :rotating_light: :warning:
+          cat >>"$GITHUB_ENV" <<-EOF
+          	RELEASE_NOTES<<RELEASE_NOTES_EOF
+          	# :warning: :rotating_light: :boom: Note!!! :boom: :rotating_light: :warning:
 
-          The uploaded files will be updated on the next merge to main, as such download them before use to avoid surprises.
+          	The uploaded files will be updated on the next merge to main, as such download them before use to avoid surprises.
 
-          ---
-          Commit: ${{needs.validation.outputs.commitid}}
-          ---
+          	---
+          	Commit: ${{needs.validation.outputs.commitid}}
+          	---
 
-          $generated_release_notes
-          RELEASE_NOTES_EOF
+          	$generated_release_notes
+          	RELEASE_NOTES_EOF
           EOF
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
