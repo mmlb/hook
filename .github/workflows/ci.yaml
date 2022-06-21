@@ -40,7 +40,7 @@ jobs:
           name: hook-${{steps.commitid.outputs.short}}
           path: out/${{steps.commitid.outputs.short}}/rel/hook_*.tar.gz
 
-  publish-tarballs-latest:
+  publish-release-latest:
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/main'
     needs: validation
@@ -92,3 +92,33 @@ jobs:
           files: hook_*.tar.gz
           prerelease: true
           tag_name: latest
+
+  publish-release:
+    runs-on: ubuntu-20.04
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: validation
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: hook-${{needs.validation.outputs.commitid}}
+
+      - name: Generate Release Notes
+        run: |
+          generated_release_notes=$(gh api 'repos/{owner}/{repo}/releases/generate-notes' -F tag_name=${{github.ref}} --jq .body)
+          cat >>"$GITHUB_ENV" <<-EOF
+          	RELEASE_NOTES<<RELEASE_NOTES_EOF
+          	$generated_release_notes
+          	RELEASE_NOTES_EOF
+          EOF
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Update latest release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{env.RELEASE_NOTES}}
+          files: hook_*.tar.gz
